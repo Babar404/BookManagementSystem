@@ -1,0 +1,90 @@
+<mat-card>
+
+  <mat-card-header>
+
+    <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title-group>
+        
+        <mat-card-title><br/> Book Management </mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+                  
+      </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <br/>
+  <p>
+
+  <mat-card-content>
+
+        <div class="mat-elevation-z8">
+          <mat-table class="mat-elevation-z8" 
+                     mat-table 
+                     [dataSource]="dataSource" 
+                     [multiTemplateDataRows]="true" 
+                     matSort
+                     matSortDisableClear>
+            
+            <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>                      
+
+            <ng-container matColumnDef="select">              
+                <mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox (change)="$event ? toggleAllSelection() : null" name="bookSelect"
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()">
+                  </mat-checkbox>
+                </mat-header-cell>
+
+                <mat-cell *matCellDef="let row">               
+                <mat-checkbox (click)="row.isDone ? $event.stopPropagation() : ''"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)"
+                              [disabled]="row.isDone">
+                </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="title">
+              <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>              
+            </ng-container>
+            
+            <ng-container matColumnDef="author">
+              <mat-header-cell *matHeaderCellDef> Author </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.author}} </mat-cell>              
+            </ng-container>
+
+            <ng-container matColumnDef="publishedDate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> PublishedDate </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.publishedDate | date:'dd/MM/yyyy h:mm a'}}  </mat-cell>
+            </ng-container>          
+
+            <ng-container matColumnDef="isbn">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Isbn </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.isbn }}  </mat-cell>
+            </ng-container>
+                        
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+
+          </mat-table>
+          <mat-paginator [length]="totalItems"
+               [pageSize]="pageSize"
+               [pageSizeOptions]="[5, 10, 20]"
+               (page)="$event; loadPage($event.pageIndex, $event.pageSize)">
+          </mat-paginator>
+          
+        </div>
+  </mat-card-content>
+  
+  <mat-card-actions>    
+    <button mat-raised-button color="accent" style="width: 100%" (click)="createBook()"> Create Book</button>
+  </mat-card-actions>
+
+  <mat-card-actions>    
+    <button mat-raised-button color="accent" style="width: 100%" [disabled]="!selection.hasValue()" (click)="deleteSelectedBooks()"> Delete</button>
+  </mat-card-actions>
+
+</mat-card>
